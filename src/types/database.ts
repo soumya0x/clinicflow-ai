@@ -1,6 +1,12 @@
 // ============================================================================
 // Supabase database types — hand-maintained to match supabase/migrations.
 // In a live project, regenerate with:  npm run db:types
+//
+// NOTE: Entity shapes are declared as `type` aliases (not `interface`) on
+// purpose: Supabase's GenericTable requires `Row extends Record<string,
+// unknown>`, and TypeScript only treats object `type` aliases (not
+// `interface`s) as assignable to an index signature. Using `interface` here
+// makes the client type every row as `never`.
 // ============================================================================
 
 export type UserRole = "admin" | "receptionist";
@@ -48,7 +54,7 @@ export type NotificationType =
   | "appointment_booked"
   | "missed_call";
 
-export interface BusinessHours {
+export type BusinessHours = {
   mon: [string, string] | null;
   tue: [string, string] | null;
   wed: [string, string] | null;
@@ -56,9 +62,9 @@ export interface BusinessHours {
   fri: [string, string] | null;
   sat: [string, string] | null;
   sun: [string, string] | null;
-}
+};
 
-export interface Clinic {
+export type Clinic = {
   id: string;
   name: string;
   phone: string;
@@ -81,18 +87,18 @@ export interface Clinic {
   google_connected: boolean;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface AppUser {
+export type AppUser = {
   id: string;
   clinic_id: string;
   role: UserRole;
   full_name: string | null;
   email: string | null;
   created_at: string;
-}
+};
 
-export interface Patient {
+export type Patient = {
   id: string;
   clinic_id: string;
   name: string;
@@ -103,9 +109,9 @@ export interface Patient {
   total_calls: number;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface Appointment {
+export type Appointment = {
   id: string;
   clinic_id: string;
   patient_id: string | null;
@@ -119,9 +125,9 @@ export interface Appointment {
   notes: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface Call {
+export type Call = {
   id: string;
   clinic_id: string;
   patient_id: string | null;
@@ -132,9 +138,9 @@ export interface Call {
   vapi_call_id: string | null;
   recording_url: string | null;
   created_at: string;
-}
+};
 
-export interface MissedCall {
+export type MissedCall = {
   id: string;
   clinic_id: string;
   caller_phone: string;
@@ -148,9 +154,9 @@ export interface MissedCall {
   next_attempt_at: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface CallbackLog {
+export type CallbackLog = {
   id: string;
   missed_call_id: string;
   callback_time: string;
@@ -158,9 +164,9 @@ export interface CallbackLog {
   result: CallbackResult | null;
   transcript: string | null;
   created_at: string;
-}
+};
 
-export interface Notification {
+export type Notification = {
   id: string;
   clinic_id: string;
   type: NotificationType;
@@ -169,7 +175,7 @@ export interface Notification {
   related_id: string | null;
   read: boolean;
   created_at: string;
-}
+};
 
 // ── Supabase generic Database shape ──────────────────────────
 type Row<T> = T;
@@ -179,7 +185,7 @@ type Update<T> = Partial<T>;
 
 type GeneratedCols = "id" | "created_at" | "updated_at";
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       clinics: {
@@ -239,4 +245,4 @@ export interface Database {
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };
   };
-}
+};
