@@ -186,46 +186,57 @@ export interface Database {
         Row: Row<Clinic>;
         Insert: Insert<Clinic, GeneratedCols>;
         Update: Update<Clinic>;
+        Relationships: [];
       };
       users: {
         Row: Row<AppUser>;
         Insert: Insert<AppUser, "created_at">;
         Update: Update<AppUser>;
+        Relationships: [];
       };
       patients: {
         Row: Row<Patient>;
         Insert: Insert<Patient, GeneratedCols | "total_calls" | "last_appointment">;
         Update: Update<Patient>;
+        Relationships: [];
       };
       appointments: {
         Row: Row<Appointment>;
         Insert: Insert<Appointment, GeneratedCols | "google_event_id">;
         Update: Update<Appointment>;
+        Relationships: [];
       };
       calls: {
         Row: Row<Call>;
         Insert: Insert<Call, "id" | "created_at">;
         Update: Update<Call>;
+        Relationships: [];
       };
       missed_calls: {
         Row: Row<MissedCall>;
         Insert: Insert<MissedCall, GeneratedCols>;
         Update: Update<MissedCall>;
+        Relationships: [];
       };
       callback_logs: {
         Row: Row<CallbackLog>;
         Insert: Insert<CallbackLog, "id" | "created_at">;
         Update: Update<CallbackLog>;
+        Relationships: [];
       };
       notifications: {
         Row: Row<Notification>;
         Insert: Insert<Notification, "id" | "created_at" | "read">;
         Update: Update<Notification>;
+        Relationships: [];
       };
     };
+    Views: { [_ in never]: never };
     Functions: {
       auth_clinic_id: { Args: Record<string, never>; Returns: string };
       auth_is_admin: { Args: Record<string, never>; Returns: boolean };
     };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
 }

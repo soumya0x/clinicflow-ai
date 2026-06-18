@@ -30,7 +30,7 @@ export function AnalyticsView({ series }: { series: TimeSeriesPoint[] }) {
         </CardHeader>
         <CardContent>
           <BarTrendChart
-            data={data}
+            data={data as unknown as Record<string, unknown>[]}
             xKey="label"
             series={[
               { key: "calls", name: "Calls", color: "hsl(201 96% 32%)" },

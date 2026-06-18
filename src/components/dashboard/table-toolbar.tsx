@@ -51,13 +51,10 @@ export function TableToolbar({
           className="pl-9"
           onChange={(e) => {
             const value = e.target.value;
-            // debounce-lite via transition
-            const win = window as unknown as { __tt?: ReturnType<typeof setTimeout> };
-            clearTimeout(win.__tt);
-            win.__tt = setTimeout(
-              () => setParam("search", value),
-              350
-            );
+            // debounce-lite
+            const win = window as unknown as { __tt?: number };
+            if (win.__tt) window.clearTimeout(win.__tt);
+            win.__tt = window.setTimeout(() => setParam("search", value), 350);
           }}
         />
       </div>

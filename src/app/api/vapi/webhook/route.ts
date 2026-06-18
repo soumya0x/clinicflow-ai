@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const message = payload.message ?? {};
+  const message: Record<string, any> = payload.message ?? {};
   const type = message.type as string | undefined;
   const db = createServiceClient();
 
