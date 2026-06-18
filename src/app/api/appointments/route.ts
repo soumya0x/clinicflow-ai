@@ -11,6 +11,7 @@ import {
   DoubleBookingError,
 } from "@/lib/services/appointments";
 import { deleteCalendarEvent, updateCalendarEvent } from "@/lib/google-calendar";
+import type { Appointment } from "@/types/database";
 
 export const dynamic = "force-dynamic";
 
@@ -113,17 +114,20 @@ export const PATCH = withErrorHandling(async (req) => {
   if (error) throw error;
   if (!data) return fail("Appointment not found", 404);
 
+  const appt = data as unknown as Appointment & {
+    patient: { name: string | null; phone: string | null } | null;
+  };
+
   // Keep Google Calendar in sync if the event exists and time/date changed.
-  if (data.google_event_id && ctx.clinic.google_connected && (updates.appointment_date || updates.appointment_time)) {
+  if (appt.google_event_id && ctx.clinic.google_connected && (updates.appointment_date || updates.appointment_time)) {
     try {
-      const appointmentData = data as AppointmentData;
-      await updateCalendarEvent(ctx.clinic, data.google_event_id, {
-        patientName: appointmentData.patient?.name ?? "Patient",
-        phone: appointmentData.patient?.phone ?? "",
-        appointmentType: appointmentData.reason ?? "Appointment",
-        notes: appointmentData.notes ?? undefined,
-        date: appointmentData.appointment_date,
-        time: String(appointmentData.appointment_time).slice(0, 5),
+      await updateCalendarEvent(ctx.clinic, appt.google_event_id, {
+        patientName: appt.patient?.name ?? "Patient",
+        phone: appt.patient?.phone ?? "",
+        appointmentType: appt.reason ?? "Appointment",
+        notes: appt.notes ?? undefined,
+        date: appt.appointment_date,
+        time: String(appt.appointment_time).slice(0, 5),
         timezone: ctx.clinic.timezone,
       });
     } catch (err) {
@@ -131,7 +135,7 @@ export const PATCH = withErrorHandling(async (req) => {
     }
   }
 
-  return ok(data);
+  return ok(appt);
 });
 
 // DELETE /api/appointments?id=

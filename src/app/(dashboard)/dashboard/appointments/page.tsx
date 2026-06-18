@@ -17,6 +17,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency, formatDate, titleCase } from "@/lib/utils";
+import type { AppointmentStatus, BookingSource } from "@/types/database";
+
+type AppointmentRow = {
+  id: string;
+  appointment_date: string;
+  appointment_time: string;
+  reason: string | null;
+  booking_source: BookingSource;
+  estimated_value: number;
+  status: AppointmentStatus;
+  patient: { name: string | null; phone: string | null } | null;
+};
 
 export const dynamic = "force-dynamic";
 
@@ -105,7 +117,7 @@ export default async function AppointmentsPage({
                   </TableCell>
                 </TableRow>
               ) : (
-                (data ?? []).map((a: Appointment) => (
+                ((data ?? []) as unknown as AppointmentRow[]).map((a) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-medium">
                       <div>{a.patient?.name ?? "Unknown"}</div>

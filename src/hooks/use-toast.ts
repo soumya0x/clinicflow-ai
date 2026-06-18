@@ -14,13 +14,6 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
-type ActionType = {
-  readonly ADD_TOAST: "ADD_TOAST";
-  readonly UPDATE_TOAST: "UPDATE_TOAST";
-  readonly DISMISS_TOAST: "DISMISS_TOAST";
-  readonly REMOVE_TOAST: "REMOVE_TOAST";
-};
-
 let count = 0;
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER;
@@ -28,10 +21,10 @@ function genId() {
 }
 
 type Action =
-  | { type: ActionType["ADD_TOAST"]; toast: ToasterToast }
-  | { type: ActionType["UPDATE_TOAST"]; toast: Partial<ToasterToast> }
-  | { type: ActionType["DISMISS_TOAST"]; toastId?: string }
-  | { type: ActionType["REMOVE_TOAST"]; toastId?: string };
+  | { type: "ADD_TOAST"; toast: ToasterToast }
+  | { type: "UPDATE_TOAST"; toast: Partial<ToasterToast> }
+  | { type: "DISMISS_TOAST"; toastId?: string }
+  | { type: "REMOVE_TOAST"; toastId?: string };
 
 interface State {
   toasts: ToasterToast[];

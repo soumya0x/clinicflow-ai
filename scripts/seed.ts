@@ -46,7 +46,7 @@ const db = createClient(url, serviceKey, {
 });
 
 // ── Helpers ──────────────────────────────────────────────────
-const rand = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const rand = <T,>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
 const randInt = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 

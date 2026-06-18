@@ -28,6 +28,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate, formatDuration } from "@/lib/utils";
+import type { AppointmentStatus } from "@/types/database";
+
+type UpcomingRow = {
+  id: string;
+  appointment_date: string;
+  appointment_time: string;
+  status: AppointmentStatus;
+  patient: { name: string | null; phone: string | null } | null;
+};
 
 export const dynamic = "force-dynamic";
 
@@ -102,7 +111,7 @@ export default async function DashboardPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                (upcoming.data ?? []).map((a: Appointment) => (
+                ((upcoming.data ?? []) as unknown as UpcomingRow[]).map((a) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-medium">
                       {a.patient?.name ?? "Unknown"}
