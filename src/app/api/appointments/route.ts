@@ -74,15 +74,6 @@ export const POST = withErrorHandling(async (req) => {
   }
 });
 
-interface AppointmentData {
-  patient?: { name?: string; phone?: string };
-  reason?: string;
-  notes?: string;
-  appointment_date: string;
-  appointment_time: string;
-  google_event_id?: string | null;
-}
-
 // PATCH /api/appointments
 export const PATCH = withErrorHandling(async (req) => {
   const ctx = await requireAuth();

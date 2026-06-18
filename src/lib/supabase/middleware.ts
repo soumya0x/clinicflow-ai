@@ -9,12 +9,6 @@ function isPublic(pathname: string): boolean {
   return PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
 }
 
-interface CookieToSet {
-  name: string;
-  value: string;
-  options?: Record<string, unknown>;
-}
-
 /**
  * Refresh the Supabase session cookie on every request and guard
  * protected routes. Unauthenticated users hitting a protected page are

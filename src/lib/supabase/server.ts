@@ -1,12 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-interface CookieToSet {
-  name: string;
-  value: string;
-  options?: Record<string, unknown>;
-}
-
 /**
  * Server Supabase client (RSC, route handlers, server actions).
  * Uses the anon key + the user's session cookie, so RLS applies.
