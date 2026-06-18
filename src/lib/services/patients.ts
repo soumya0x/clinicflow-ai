@@ -1,8 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Patient } from "@/types/database";
+import type { Patient } from "@/types/database";
 import { normalizePhone } from "@/lib/utils";
 
-export type DBClient = SupabaseClient<Database>;
+/**
+ * Schema-agnostic Supabase client type. Query results are loosely typed; the
+ * application enforces shapes at function boundaries (services, auth context,
+ * components) using the domain types in `@/types/database`.
+ */
+export type DBClient = SupabaseClient;
 
 /**
  * Find a patient by phone within a clinic, or create one. Tenant-scoped via
