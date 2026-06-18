@@ -34,17 +34,6 @@ export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 15;
 
-interface Appointment {
-  id: string;
-  patient?: { name: string; phone: string };
-  appointment_date: string;
-  appointment_time: string;
-  reason?: string;
-  booking_source: string;
-  estimated_value: number | string;
-  status: string;
-}
-
 export default async function AppointmentsPage({
   searchParams,
 }: {

@@ -40,14 +40,6 @@ type UpcomingRow = {
 
 export const dynamic = "force-dynamic";
 
-interface Appointment {
-  id: string;
-  patient?: { name: string; phone: string };
-  appointment_date: string;
-  appointment_time: string;
-  status: string;
-}
-
 export default async function DashboardPage() {
   const ctx = await getAuthContext();
   const supabase = await createClient();
