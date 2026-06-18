@@ -59,11 +59,11 @@ export async function POST(req: Request) {
   // Resolve clinic from the number that was called.
   const callObj = message.call as Record<string, unknown> | undefined;
   const phoneNumberObj = message.phoneNumber as Record<string, unknown> | undefined;
-  const calledNumber =
-    ((callObj?.phoneNumber as Record<string, unknown> | undefined)?.number as string | undefined) ??
-    (phoneNumberObj?.number as string | undefined) ??
-    (callObj?.phoneNumberId as string | undefined) ??
-    null;
+  const rawNumber =
+    (callObj?.phoneNumber as Record<string, unknown> | undefined)?.number ??
+    phoneNumberObj?.number ??
+    callObj?.phoneNumberId;
+  const calledNumber = typeof rawNumber === "string" ? rawNumber : null;
   const clinic = await resolveClinicByPhone(db, calledNumber);
 
   if (!clinic) {
