@@ -1,0 +1,17 @@
+# Supabase local config. `project_id` is your project ref for `supabase link`.
+project_id = "clinicflow-ai"
+
+[db]
+port = 54322
+major_version = 15
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
