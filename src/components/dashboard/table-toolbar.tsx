@@ -18,6 +18,12 @@ export interface FilterConfig {
   options: { label: string; value: string }[];
 }
 
+declare global {
+  interface Window {
+    __tt?: NodeJS.Timeout;
+  }
+}
+
 export function TableToolbar({
   searchPlaceholder = "Search…",
   filters = [],
@@ -52,8 +58,8 @@ export function TableToolbar({
           onChange={(e) => {
             const value = e.target.value;
             // debounce-lite via transition
-            window.clearTimeout((window as any).__tt);
-            (window as any).__tt = window.setTimeout(
+            window.clearTimeout(window.__tt);
+            window.__tt = window.setTimeout(
               () => setParam("search", value),
               350
             );

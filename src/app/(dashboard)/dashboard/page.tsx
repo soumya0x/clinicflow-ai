@@ -31,6 +31,14 @@ import { formatDate, formatDuration } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
+interface Appointment {
+  id: string;
+  patient?: { name: string; phone: string };
+  appointment_date: string;
+  appointment_time: string;
+  status: string;
+}
+
 export default async function DashboardPage() {
   const ctx = await getAuthContext();
   const supabase = await createClient();
@@ -94,7 +102,7 @@ export default async function DashboardPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                (upcoming.data ?? []).map((a: any) => (
+                (upcoming.data ?? []).map((a: Appointment) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-medium">
                       {a.patient?.name ?? "Unknown"}

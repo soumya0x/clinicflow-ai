@@ -73,6 +73,15 @@ export const POST = withErrorHandling(async (req) => {
   }
 });
 
+interface AppointmentData {
+  patient?: { name?: string; phone?: string };
+  reason?: string;
+  notes?: string;
+  appointment_date: string;
+  appointment_time: string;
+  google_event_id?: string | null;
+}
+
 // PATCH /api/appointments
 export const PATCH = withErrorHandling(async (req) => {
   const ctx = await requireAuth();
@@ -107,13 +116,14 @@ export const PATCH = withErrorHandling(async (req) => {
   // Keep Google Calendar in sync if the event exists and time/date changed.
   if (data.google_event_id && ctx.clinic.google_connected && (updates.appointment_date || updates.appointment_time)) {
     try {
+      const appointmentData = data as AppointmentData;
       await updateCalendarEvent(ctx.clinic, data.google_event_id, {
-        patientName: (data as any).patient?.name ?? "Patient",
-        phone: (data as any).patient?.phone ?? "",
-        appointmentType: data.reason ?? "Appointment",
-        notes: data.notes ?? undefined,
-        date: data.appointment_date,
-        time: String(data.appointment_time).slice(0, 5),
+        patientName: appointmentData.patient?.name ?? "Patient",
+        phone: appointmentData.patient?.phone ?? "",
+        appointmentType: appointmentData.reason ?? "Appointment",
+        notes: appointmentData.notes ?? undefined,
+        date: appointmentData.appointment_date,
+        time: String(appointmentData.appointment_time).slice(0, 5),
         timezone: ctx.clinic.timezone,
       });
     } catch (err) {
