@@ -20,12 +20,12 @@ export function fail(message: string, status = 400, details?: unknown) {
  * Wrap a route handler so thrown errors become consistent JSON responses
  * and validation errors return 422 with field details.
  */
-export function withErrorHandling(
-  handler: (req: Request, ctx?: Record<string, unknown>) => Promise<Response>
+export function withErrorHandling<Args extends unknown[]>(
+  handler: (req: Request, ...args: Args) => Promise<Response>
 ) {
-  return async (req: Request, ctx?: Record<string, unknown>) => {
+  return async (req: Request, ...args: Args) => {
     try {
-      return await handler(req, ctx);
+      return await handler(req, ...args);
     } catch (err) {
       if (err instanceof ZodError) {
         return fail("Validation failed", 422, err.flatten());

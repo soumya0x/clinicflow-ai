@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { Suspense, useActionState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { signInAction, type ActionState } from "../actions";
@@ -17,6 +17,14 @@ import {
 } from "@/components/ui/card";
 
 export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
   const [state, formAction] = useActionState<ActionState, FormData>(
     signInAction,
     {}
