@@ -18,6 +18,12 @@ export interface FilterConfig {
   options: { label: string; value: string }[];
 }
 
+declare global {
+  interface Window {
+    __tt?: ReturnType<typeof setTimeout>;
+  }
+}
+
 export function TableToolbar({
   searchPlaceholder = "Search…",
   filters = [],

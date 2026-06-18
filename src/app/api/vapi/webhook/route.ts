@@ -24,6 +24,10 @@ interface VapiToolCall {
   function?: { name?: string; arguments?: unknown };
 }
 
+interface VapiPayload {
+  message?: Record<string, unknown>;
+}
+
 function parseArgs(raw: unknown): Record<string, unknown> {
   if (!raw) return {};
   if (typeof raw === "object") return raw as Record<string, unknown>;
@@ -41,7 +45,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  let payload: { message?: Record<string, any> };
+  let payload: VapiPayload;
   try {
     payload = JSON.parse(rawBody);
   } catch {
@@ -53,10 +57,12 @@ export async function POST(req: Request) {
   const db = createServiceClient();
 
   // Resolve clinic from the number that was called.
+  const callObj = message.call as Record<string, unknown> | undefined;
+  const phoneNumberObj = message.phoneNumber as Record<string, unknown> | undefined;
   const calledNumber =
-    message.call?.phoneNumber?.number ??
-    message.phoneNumber?.number ??
-    message.call?.phoneNumberId ??
+    (callObj?.phoneNumber as Record<string, unknown>)?.number ??
+    (phoneNumberObj?.number as string) ??
+    (callObj?.phoneNumberId as string) ??
     null;
   const clinic = await resolveClinicByPhone(db, calledNumber);
 
@@ -89,11 +95,11 @@ export async function POST(req: Request) {
 async function handleToolCalls(
   db: ReturnType<typeof createServiceClient>,
   clinic: Clinic,
-  message: Record<string, any>
+  message: Record<string, unknown>
 ) {
   // Newer shape: message.toolCalls / message.toolCallList
   const toolCalls: VapiToolCall[] =
-    message.toolCalls ?? message.toolCallList ?? [];
+    (message.toolCalls as VapiToolCall[]) ?? (message.toolCallList as VapiToolCall[]) ?? [];
 
   if (toolCalls.length > 0) {
     const results = await Promise.all(
@@ -108,12 +114,12 @@ async function handleToolCalls(
   }
 
   // Legacy shape: message.functionCall { name, parameters }
-  const fc = message.functionCall;
+  const fc = message.functionCall as Record<string, unknown> | undefined;
   if (fc?.name) {
     const { result } = await executeVoiceTool(
       db,
       clinic,
-      fc.name,
+      String(fc.name),
       parseArgs(fc.parameters)
     );
     return NextResponse.json({ result });
@@ -125,38 +131,46 @@ async function handleToolCalls(
 async function handleStatusUpdate(
   db: ReturnType<typeof createServiceClient>,
   clinic: Clinic,
-  message: Record<string, any>
+  message: Record<string, unknown>
 ) {
   const status = message.status as string | undefined;
   const endedReason = message.endedReason as string | undefined;
+  const callObj = message.call as Record<string, unknown> | undefined;
+  const customerObj = message.customer as Record<string, unknown> | undefined;
   const callerNumber =
-    message.call?.customer?.number ?? message.customer?.number;
+    (callObj?.customer as Record<string, unknown>)?.number ??
+    (customerObj?.number as string);
 
   if (status === "ended" && endedReason && NO_ANSWER_REASONS.has(endedReason) && callerNumber) {
-    await createMissedCall(db, clinic, normalizePhone(callerNumber));
+    await createMissedCall(db, clinic, normalizePhone(String(callerNumber)));
   }
 }
 
 async function handleEndOfCall(
   db: ReturnType<typeof createServiceClient>,
   clinic: Clinic,
-  message: Record<string, any>
+  message: Record<string, unknown>
 ) {
-  const call = message.call ?? {};
+  const callObj = (message.call as Record<string, unknown>) ?? {};
+  const customerObj = message.customer as Record<string, unknown> | undefined;
   const callerNumber =
-    call.customer?.number ?? message.customer?.number ?? "unknown";
-  const transcript = message.transcript ?? message.artifact?.transcript ?? null;
+    (callObj.customer as Record<string, unknown>)?.number ??
+    (customerObj?.number as string) ??
+    "unknown";
+  const transcript = (message.transcript as string) ?? ((message.artifact as Record<string, unknown>)?.transcript as string) ?? null;
   const durationSeconds = Math.round(
     Number(message.durationSeconds ?? message.duration ?? 0)
   );
   const recordingUrl =
-    message.recordingUrl ?? message.artifact?.recordingUrl ?? null;
+    (message.recordingUrl as string) ?? ((message.artifact as Record<string, unknown>)?.recordingUrl as string) ?? null;
 
   const outcome = inferOutcome(message);
 
   // If this was an outbound recovery callback, update the missed call.
+  const callMetadata = callObj.metadata as Record<string, unknown> | undefined;
+  const messageMetadata = message.metadata as Record<string, unknown> | undefined;
   const missedCallId =
-    call.metadata?.missed_call_id ?? message.metadata?.missed_call_id;
+    (callMetadata?.missed_call_id as string) ?? (messageMetadata?.missed_call_id as string);
   if (missedCallId) {
     const callbackResult =
       outcome === "appointment_booked"
@@ -170,19 +184,19 @@ async function handleEndOfCall(
       missedCallId,
       callbackResult,
       undefined,
-      transcript,
+      String(transcript),
       durationSeconds
     );
   }
 
   await db.from("calls").insert({
     clinic_id: clinic.id,
-    caller_phone: normalizePhone(callerNumber),
-    transcript,
+    caller_phone: normalizePhone(String(callerNumber)),
+    transcript: String(transcript),
     duration: durationSeconds,
     outcome,
-    vapi_call_id: call.id ?? message.callId ?? null,
-    recording_url: recordingUrl,
+    vapi_call_id: (callObj.id as string) ?? (message.callId as string) ?? null,
+    recording_url: String(recordingUrl),
   });
 
   // Notify staff when a transfer was requested or an appointment was booked.
@@ -196,12 +210,14 @@ async function handleEndOfCall(
   }
 }
 
-function inferOutcome(message: Record<string, any>): CallOutcome {
+function inferOutcome(message: Record<string, unknown>): CallOutcome {
+  const analysisObj = message.analysis as Record<string, unknown> | undefined;
   const summary = String(
-    message.analysis?.summary ?? message.summary ?? ""
+    (analysisObj?.summary as string) ?? (message.summary as string) ?? ""
   ).toLowerCase();
+  const artifactObj = message.artifact as Record<string, unknown> | undefined;
   const transcript = String(
-    message.transcript ?? message.artifact?.transcript ?? ""
+    (message.transcript as string) ?? (artifactObj?.transcript as string) ?? ""
   ).toLowerCase();
   const blob = `${summary} ${transcript}`;
 
