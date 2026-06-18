@@ -18,6 +18,7 @@ ClinicFlow AI answers every call, books appointments automatically, recovers mis
 [![Vapi](https://img.shields.io/badge/Vapi-Voice-5C2D91?style=for-the-badge)](https://vapi.ai/)
 
 [![Deploy](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
+[![CI](https://github.com/soumya0x/clinicflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/soumya0x/clinicflow-ai/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](#-contributing)
 ![Status](https://img.shields.io/badge/status-production--ready-success?style=flat-square)
@@ -43,6 +44,24 @@ Front desks miss calls. Missed calls are missed patients — and missed revenue.
 | One system per clinic | 🏢 **Multi-tenant** with isolated data |
 
 > 🎯 **Built for:** Dental · Physiotherapy · Skin · Eye · General Medical clinics.
+
+---
+
+## 📸 Preview
+
+> 💡 _Drop your screenshots into `docs/screenshots/` and they'll render here. Suggested captures below._
+
+<div align="center">
+
+| 📊 Dashboard | 🗓️ Appointments |
+|:---:|:---:|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Appointments](docs/screenshots/appointments.png) |
+| **💰 Revenue & ROI** | **🔁 Missed-Call Recovery** |
+| ![Revenue](docs/screenshots/revenue.png) | ![Missed Calls](docs/screenshots/missed-calls.png) |
+
+🎥 _Tip: record a 20–30s Loom/GIF of a live call booking an appointment and embed it here for maximum wow._
+
+</div>
 
 ---
 
