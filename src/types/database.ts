@@ -178,61 +178,61 @@ export type Notification = {
 };
 
 // ── Supabase generic Database shape ──────────────────────────
+// Row is the exact shape; Insert/Update are permissive (the database enforces
+// NOT NULL + defaults at runtime). This keeps hand-written types ergonomic and
+// avoids fighting Supabase's generic table constraints.
 type Row<T> = T;
-type Insert<T, Optional extends keyof T> = Omit<T, Optional> &
-  Partial<Pick<T, Optional>>;
+type Insert<T> = Partial<T>;
 type Update<T> = Partial<T>;
-
-type GeneratedCols = "id" | "created_at" | "updated_at";
 
 export type Database = {
   public: {
     Tables: {
       clinics: {
         Row: Row<Clinic>;
-        Insert: Insert<Clinic, GeneratedCols>;
+        Insert: Insert<Clinic>;
         Update: Update<Clinic>;
         Relationships: [];
       };
       users: {
         Row: Row<AppUser>;
-        Insert: Insert<AppUser, "created_at">;
+        Insert: Insert<AppUser>;
         Update: Update<AppUser>;
         Relationships: [];
       };
       patients: {
         Row: Row<Patient>;
-        Insert: Insert<Patient, GeneratedCols | "total_calls" | "last_appointment">;
+        Insert: Insert<Patient>;
         Update: Update<Patient>;
         Relationships: [];
       };
       appointments: {
         Row: Row<Appointment>;
-        Insert: Insert<Appointment, GeneratedCols | "google_event_id">;
+        Insert: Insert<Appointment>;
         Update: Update<Appointment>;
         Relationships: [];
       };
       calls: {
         Row: Row<Call>;
-        Insert: Insert<Call, "id" | "created_at">;
+        Insert: Insert<Call>;
         Update: Update<Call>;
         Relationships: [];
       };
       missed_calls: {
         Row: Row<MissedCall>;
-        Insert: Insert<MissedCall, GeneratedCols>;
+        Insert: Insert<MissedCall>;
         Update: Update<MissedCall>;
         Relationships: [];
       };
       callback_logs: {
         Row: Row<CallbackLog>;
-        Insert: Insert<CallbackLog, "id" | "created_at">;
+        Insert: Insert<CallbackLog>;
         Update: Update<CallbackLog>;
         Relationships: [];
       };
       notifications: {
         Row: Row<Notification>;
-        Insert: Insert<Notification, "id" | "created_at" | "read">;
+        Insert: Insert<Notification>;
         Update: Update<Notification>;
         Relationships: [];
       };
