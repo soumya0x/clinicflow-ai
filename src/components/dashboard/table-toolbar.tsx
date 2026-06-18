@@ -20,7 +20,7 @@ export interface FilterConfig {
 
 declare global {
   interface Window {
-    __tt?: NodeJS.Timeout;
+    __tt?: ReturnType<typeof setTimeout>;
   }
 }
 
