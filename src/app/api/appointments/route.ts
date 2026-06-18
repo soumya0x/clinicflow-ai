@@ -107,9 +107,10 @@ export const PATCH = withErrorHandling(async (req) => {
   // Keep Google Calendar in sync if the event exists and time/date changed.
   if (data.google_event_id && ctx.clinic.google_connected && (updates.appointment_date || updates.appointment_time)) {
     try {
+      const apptWithPatient = data as typeof data & { patient?: { name?: string; phone?: string } };
       await updateCalendarEvent(ctx.clinic, data.google_event_id, {
-        patientName: (data as any).patient?.name ?? "Patient",
-        phone: (data as any).patient?.phone ?? "",
+        patientName: apptWithPatient.patient?.name ?? "Patient",
+        phone: apptWithPatient.patient?.phone ?? "",
         appointmentType: data.reason ?? "Appointment",
         notes: data.notes ?? undefined,
         date: data.appointment_date,

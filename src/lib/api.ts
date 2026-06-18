@@ -21,9 +21,9 @@ export function fail(message: string, status = 400, details?: unknown) {
  * and validation errors return 422 with field details.
  */
 export function withErrorHandling(
-  handler: (req: Request, ctx?: any) => Promise<Response>
+  handler: (req: Request, ctx?: Record<string, unknown>) => Promise<Response>
 ) {
-  return async (req: Request, ctx?: any) => {
+  return async (req: Request, ctx?: Record<string, unknown>) => {
     try {
       return await handler(req, ctx);
     } catch (err) {

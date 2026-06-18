@@ -52,8 +52,9 @@ export function TableToolbar({
           onChange={(e) => {
             const value = e.target.value;
             // debounce-lite via transition
-            window.clearTimeout((window as any).__tt);
-            (window as any).__tt = window.setTimeout(
+            const win = window as unknown as { __tt?: ReturnType<typeof setTimeout> };
+            clearTimeout(win.__tt);
+            win.__tt = setTimeout(
               () => setParam("search", value),
               350
             );

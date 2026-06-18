@@ -94,7 +94,7 @@ export default async function DashboardPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                (upcoming.data ?? []).map((a: any) => (
+                (upcoming.data ?? []).map((a: { id: string; appointment_date: string; appointment_time: string; status: string; patient?: { name?: string } }) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-medium">
                       {a.patient?.name ?? "Unknown"}

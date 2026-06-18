@@ -94,7 +94,7 @@ export default async function AppointmentsPage({
                   </TableCell>
                 </TableRow>
               ) : (
-                (data ?? []).map((a: any) => (
+                (data ?? []).map((a: { id: string; appointment_date: string; appointment_time: string; reason?: string; booking_source: string; estimated_value: number; status: string; patient?: { name?: string; phone?: string } }) => (
                   <TableRow key={a.id}>
                     <TableCell className="font-medium">
                       <div>{a.patient?.name ?? "Unknown"}</div>
