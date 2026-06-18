@@ -21,6 +21,9 @@ const actionTypes = {
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const;
 
+// Reference the values so the const isn't flagged as "only used as a type".
+export const TOAST_ACTIONS = actionTypes;
+
 let count = 0;
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER;
