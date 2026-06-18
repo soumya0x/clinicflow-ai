@@ -60,7 +60,7 @@ export async function POST(req: Request) {
   const callObj = message.call as Record<string, unknown> | undefined;
   const phoneNumberObj = message.phoneNumber as Record<string, unknown> | undefined;
   const calledNumber =
-    (callObj?.phoneNumber as Record<string, unknown>)?.number ??
+    ((callObj?.phoneNumber as Record<string, unknown>)?.number as string | undefined) ??
     (phoneNumberObj?.number as string) ??
     (callObj?.phoneNumberId as string) ??
     null;
